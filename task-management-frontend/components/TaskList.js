@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import EditTaskForm from './EditTaskForm'; // Import EditTaskForm component
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [editingTaskId, setEditingTaskId] = useState(null); // State to track which task is being edited
 
   useEffect(() => {
     fetchTasks();
@@ -46,6 +48,21 @@ const TaskList = () => {
   };
   const filteredTasks = statusFilter === 'all' ? tasks : tasks.filter(task => task.status === statusFilter);
 
+  // Function to handle task update and refresh task list
+  const handleTaskUpdated = () => {
+    fetchTasks(); // Trigger refresh of task list
+    setEditingTaskId(null); // Exit edit mode after update
+  };
+
+  // Function to enter edit mode for a task
+  const handleEditTask = (id) => {
+    setEditingTaskId(id); // Set the ID of the task being edited
+  };
+
+  // Function to cancel edit mode
+  const handleCancelEdit = () => {
+    setEditingTaskId(null); // Reset editingTaskId to null, exiting edit mode
+  };
 
   return (
     <div>
@@ -66,8 +83,18 @@ const TaskList = () => {
       <ul className="divide-y divide-gray-200">
         {filteredTasks.map((task) => (
           <li key={task.id} className="py-4">
+          {editingTaskId === task.id ? (       // Render EditTaskForm if this task is being edited
+            <EditTaskForm
+              task={task}
+              onTaskUpdated={handleTaskUpdated}
+              onCancelEdit={handleCancelEdit}
+            />
+          ) : (                                                             // Otherwise, render task details
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
+                <p className="text-gray-500">{task.description}</p>
+              </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Status:</span>
                 <select
@@ -80,6 +107,12 @@ const TaskList = () => {
                   <option value="completed">Completed</option>
                 </select>
                 <button
+                    onClick={() => handleEditTask(task.id)} // Enter edit mode on click
+                    className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Edit
+                </button>
+                <button
                   onClick={() => handleDeleteTask(task.id)}
                   className="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
                 >
@@ -87,7 +120,7 @@ const TaskList = () => {
                 </button>
               </div>
             </div>
-            <p className="text-gray-500">{task.description}</p>
+          )}
           </li>
         ))}
       </ul>
