@@ -49,27 +49,45 @@ const TaskList = () => {
 
   return (
     <div>
-      <div>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+      <div className="mb-4">
+        <label htmlFor="status-filter" className="block text-gray-700 text-sm font-bold mb-2">Filter by Status:</label>
+        <select
+          id="status-filter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        >
           <option value="all">All Statuses</option>
           <option value="pending">Pending</option>
           <option value="in-progress">In Progress</option>
           <option value="completed">Completed</option>
         </select>
       </div>
-      <ul>
+      <ul className="divide-y divide-gray-200">
         {filteredTasks.map((task) => (
-          <li key={task.id}>
-            {task.title} - Status: {task.status}
-            <select
-              value={task.status}
-              onChange={(e) => handleStatusChange(task.id, e.target.value)}
-            >
-              <option value="pending">Pending</option>
-              <option value="in-progress">In Progress</option>
-              <option value="completed">Completed</option>
-            </select>
-            <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
+          <li key={task.id} className="py-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-gray-800">{task.title}</h3>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Status:</span>
+                <select
+                  value={task.status}
+                  onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                  className="shadow border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-sm"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+                <button
+                  onClick={() => handleDeleteTask(task.id)}
+                  className="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+            <p className="text-gray-500">{task.description}</p>
           </li>
         ))}
       </ul>

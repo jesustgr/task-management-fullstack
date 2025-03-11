@@ -10,10 +10,10 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Task Management Platform</h1>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Task Management Platform</h1>
       <AddTaskForm onTaskAdded={handleTaskAdded} />
-      <h2>Task List</h2>
+      <h2 className="text-xl font-semibold mb-2">Task List</h2>
       <TaskList key={tasksUpdated} /> {/* Force TaskList to re-render on task add/update */}
     </div>
   );
